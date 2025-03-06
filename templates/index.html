@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Piezas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="lista-container">
+    <!-- Botón para mostrar opciones de filtrado -->
+    <button id="btnFiltrar" class="btn-filtrar">Buscar Pieza</button>
+
+    <!-- Contenedor de opciones de filtrado, oculto por defecto -->
+    <div id="filtroOpciones" class="filtro-opciones">
+      <form id="formFiltro">
+          <input type="text" name="refPedido" placeholder="REF del pedido" class="input-grande">
+          <input type="text" name="refPieza" placeholder="REF de la pieza" class="input-grande">
+
+            <!-- Filtro por color -->
+          <select name="color" class="input-grande">
+              <option value="">Selecciona color</option>
+              <option value="rojo">Rojo</option>
+              <option value="verde">Verde</option>
+              <option value="azul">Azul</option>
+              <option value="amarillo">Amarillo</option>
+              <option value="negro">Negro</option>
+          </select>
+
+            <!-- Filtro por material -->
+          <select name="material" class="input-grande">
+              <option value="">Selecciona material</option>
+              <option value="metal">Metal</option>
+              <option value="plastico">Plástico</option>
+              <option value="madera">Madera</option>
+              <option value="vidrio">Vidrio</option>
+          </select>
+
+            <!-- Botón de filtrar al final -->
+            <button type="submit">Filtrar</button>
+      </form>
+    </div>
+
+    <!-- Lista de piezas -->
+    <div class="pieza">
+      <h2>AA001</h2>
+    </div>
+    <div class="pieza">
+      <h2>AA002</h2>
+    </div>
+    <div class="pieza">
+      <h2>AA003</h2>
+    </div>
+  </div>
+
+<!-- Enlace al archivo JavaScript externo -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

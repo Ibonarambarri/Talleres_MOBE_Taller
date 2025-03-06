@@ -1,0 +1,79 @@
+/* Estilos generales */
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.lista-container {
+  padding: 20px;
+}
+
+/* Botón de filtrar */
+.btn-filtrar {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-bottom: 15px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Opciones de filtrado */
+.filtro-opciones {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+/* Estilos para inputs y selects grandes */
+.input-grande {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+/* Estilos para el botón dentro del formulario de filtrado */
+.filtro-opciones form button {
+  padding: 8px 12px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1em;
+}
+
+/* Estilos para las piezas */
+.pieza {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 15px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pieza:hover {
+  background-color: #e6f7ff;
+}
+
+.pieza h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
