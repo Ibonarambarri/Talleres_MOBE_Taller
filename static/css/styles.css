@@ -192,3 +192,29 @@ h1 {
 #btnToggleFiltros:hover {
   background-color: #3399ff; /* Azul aún más claro al pasar el mouse */
 }
+/* Estilos generales para las piezas */
+.pieza {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Referencia de la pieza en negrita y grande */
+.pieza-referencia {
+    font-size: 20px;
+    font-weight: bold;
+    color: #003366;
+}
+
+/* Estilos para el mensaje de "No se encontraron piezas" */
+.mensaje-no-resultados {
+    font-size: 18px;
+    color: #cc0000;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+

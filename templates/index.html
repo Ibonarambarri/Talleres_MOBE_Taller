@@ -64,37 +64,41 @@
 </div>
 
 
+<h1 id="tituloResultados">Pedidos Pendientes</h1>
 
-    <h1>Pedidos Pendientes</h1>
-      {% if pedidos %}
-      {% for pedido in pedidos %}
+<!-- Contenedor donde aparecerán los pedidos o las piezas filtradas -->
+<div id="contenedorPedidos">
+    {% if pedidos %}
+    {% for pedido in pedidos %}
         <div class="pedido">
-          <h2>REF Pedido: {{ pedido.numero_pedido }}</h2>
-          <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
-          <p><strong>Prioridad:</strong> {{ pedido.prioridad }}</p>
+            <h2>REF Pedido: {{ pedido.numero_pedido }}</h2>
+            <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
+            <p><strong>Prioridad:</strong> {{ pedido.prioridad }}</p>
 
-          <h3>Piezas:</h3>
-          {% if pedido.piezas %}
+            <h3>Piezas:</h3>
+            {% if pedido.piezas %}
             <ul>
-              {% for pieza in pedido.piezas %}
+                {% for pieza in pedido.piezas %}
                 <li>
-                  <p><strong>Referencia:</strong> {{ pieza.referencia }}</p>
-                  <p><strong>Material:</strong> {{ pieza.material }}</p>
-                  <p><strong>Espesor:</strong> {{ pieza.espesor }} mm</p>
-                  <p><strong>Color:</strong> {{ pieza.color }}</p>
-                  <p><strong>Estado de Producción:</strong> {{ pieza.estado_produccion }}</p>
+                    <p><strong>Referencia:</strong> {{ pieza.referencia }}</p>
+                    <p><strong>Material:</strong> {{ pieza.material }}</p>
+                    <p><strong>Espesor:</strong> {{ pieza.espesor }} mm</p>
+                    <p><strong>Color:</strong> {{ pieza.color }}</p>
+                    <p><strong>Estado de Producción:</strong> {{ pieza.estado_produccion }}</p>
                 </li>
-              {% endfor %}
+                {% endfor %}
             </ul>
-          {% else %}
+            {% else %}
             <p>No hay piezas registradas para este pedido.</p>
-          {% endif %}
+            {% endif %}
         </div>
-      {% endfor %}
+    {% endfor %}
     {% else %}
-      <p>No hay pedidos pendientes.</p>
+    <p>No hay pedidos pendientes.</p>
     {% endif %}
-  </div>
+</div>
+
+
 
   <!-- Enlace al archivo JavaScript externo -->
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>

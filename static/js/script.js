@@ -2,8 +2,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnToggleFiltros = document.getElementById("btnToggleFiltros");
     const filtroOpciones = document.getElementById("filtroOpciones");
     const formFiltro = document.getElementById("formFiltro");
+    const contenedorPedidos = document.getElementById("contenedorPedidos");
+    const tituloResultados = document.getElementById("tituloResultados");
 
-    // Asegurar que el formulario está oculto por defecto
+    // Ocultar el formulario de filtros al inicio
     filtroOpciones.style.display = "none";
 
     // Alternar visibilidad del formulario de filtros
@@ -19,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Manejo del formulario de filtrado
     formFiltro.addEventListener("submit", function(event) {
-        event.preventDefault(); // Evita el envío tradicional del formulario
+        event.preventDefault(); // Evita que la página se recargue
 
         const formData = new FormData(formFiltro);
         const queryString = new URLSearchParams(formData).toString();
@@ -35,48 +37,32 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error('❌ Error en la solicitud:', error));
     });
 
-    // Función para actualizar la lista de piezas con los resultados filtrados
+    // Función para actualizar la lista de piezas reemplazando los pedidos
     function actualizarListaPiezas(piezas) {
-        const listaContainer = document.querySelector('.lista-container');
-
-        // Vaciar la lista actual de piezas
-        listaContainer.innerHTML = `
-            <button id="btnToggleFiltros" class="btn-filtrar">Mostrar Filtros</button>
-            <h1>Resultados de la Búsqueda</h1>
-        `;
-
-        // Volver a agregar el evento al botón de filtros (se pierde al actualizar la lista)
-        document.getElementById('btnToggleFiltros').addEventListener('click', toggleFiltro);
+        contenedorPedidos.innerHTML = ""; // Limpiar la lista de pedidos
 
         if (piezas.length === 0) {
-            listaContainer.innerHTML += "<p>No se encontraron piezas con los filtros aplicados.</p>";
+            tituloResultados.textContent = "No se encontraron piezas con los filtros aplicados";
+            contenedorPedidos.innerHTML = "<p class='mensaje-no-resultados'>Intenta con otros criterios de búsqueda.</p>";
             return;
         }
 
-        // Agregar las piezas filtradas
+        // Cambiar el título cuando se filtra
+        tituloResultados.textContent = "Piezas que coinciden con la búsqueda";
+
+        // Agregar cada pieza filtrada a la pantalla con mejor diseño
         piezas.forEach(pieza => {
             const divPieza = document.createElement('div');
             divPieza.classList.add('pieza');
             divPieza.innerHTML = `
-                <h2>${pieza.ref_pieza}</h2>
+                <h2 class="pieza-referencia">${pieza.ref_pieza}</h2>
                 <p><strong>REF Pedido:</strong> ${pieza.ref_pedido}</p>
                 <p><strong>Fecha:</strong> ${pieza.fecha}</p>
                 <p><strong>Material:</strong> ${pieza.material} - <strong>Espesor:</strong> ${pieza.espesor} mm</p>
                 <p><strong>Color:</strong> ${pieza.color}</p>
                 <p><strong>Estado:</strong> ${pieza.estado}</p>
             `;
-            listaContainer.appendChild(divPieza);
+            contenedorPedidos.appendChild(divPieza);
         });
-    }
-
-    // Función para alternar el formulario de filtros después de actualizar la lista
-    function toggleFiltro() {
-        if (filtroOpciones.style.display === "none") {
-            filtroOpciones.style.display = "flex";
-            btnToggleFiltros.textContent = "Ocultar Filtros";
-        } else {
-            filtroOpciones.style.display = "none";
-            btnToggleFiltros.textContent = "Mostrar Filtros";
-        }
     }
 });
