@@ -2,58 +2,98 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Lista de Piezas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lista de Pedidos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-  <div class="lista-container">
-    <!-- Botón para mostrar opciones de filtrado -->
-    <button id="btnFiltrar" class="btn-filtrar">Buscar Pieza</button>
-
-    <!-- Contenedor de opciones de filtrado, oculto por defecto -->
-    <div id="filtroOpciones" class="filtro-opciones">
-      <form id="formFiltro">
-          <input type="text" name="refPedido" placeholder="REF del pedido" class="input-grande">
-          <input type="text" name="refPieza" placeholder="REF de la pieza" class="input-grande">
-
-            <!-- Filtro por color -->
-          <select name="color" class="input-grande">
-              <option value="">Selecciona color</option>
-              <option value="rojo">Rojo</option>
-              <option value="verde">Verde</option>
-              <option value="azul">Azul</option>
-              <option value="amarillo">Amarillo</option>
-              <option value="negro">Negro</option>
-          </select>
-
-            <!-- Filtro por material -->
-          <select name="material" class="input-grande">
-              <option value="">Selecciona material</option>
-              <option value="metal">Metal</option>
-              <option value="plastico">Plástico</option>
-              <option value="madera">Madera</option>
-              <option value="vidrio">Vidrio</option>
-          </select>
-
-            <!-- Botón de filtrar al final -->
-            <button type="submit">Filtrar</button>
-      </form>
-    </div>
-
-    <!-- Lista de piezas -->
-    <div class="pieza">
-      <h2>AA001</h2>
-    </div>
-    <div class="pieza">
-      <h2>AA002</h2>
-    </div>
-    <div class="pieza">
-      <h2>AA003</h2>
-    </div>
+<!-- Encabezado con Logo -->
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Talleres Mobe">
   </div>
 
-<!-- Enlace al archivo JavaScript externo -->
+
+  <!-- Formulario de Filtrado -->
+<!-- Botón para mostrar filtros -->
+<button id="btnToggleFiltros" class="btn-filtrar">Mostrar Filtros</button>
+
+<!-- Contenedor de opciones de filtrado (inicialmente oculto) -->
+<div id="filtroOpciones" class="filtro-opciones" style="display: none;">
+    <form id="formFiltro">
+  <input type="text" name="refPedido" placeholder="REF del pedido">
+  <input type="text" name="refPieza" placeholder="REF de la pieza">
+
+  <label>Desde:</label>
+  <input type="date" name="fechaInicio">
+
+  <label>Hasta:</label>
+  <input type="date" name="fechaFin">
+
+  <select name="material">
+    <option value="">Selecciona material</option>
+    <option value="metal">Metal</option>
+    <option value="plastico">Plástico</option>
+    <option value="madera">Madera</option>
+    <option value="vidrio">Vidrio</option>
+  </select>
+
+  <input type="number" name="espesor" placeholder="Espesor (mm)">
+
+  <select name="color">
+    <option value="">Selecciona color</option>
+    <option value="rojo">Rojo</option>
+    <option value="verde">Verde</option>
+    <option value="azul">Azul</option>
+    <option value="amarillo">Amarillo</option>
+    <option value="negro">Negro</option>
+  </select>
+
+  <select name="estado">
+    <option value="">Selecciona estado del pedido</option>
+    <option value="pendiente">Pendiente</option>
+    <option value="cortado">Cortado</option>
+    <option value="doblado">Doblado</option>
+    <option value="entregado">Entregado</option>
+  </select>
+
+  <button type="submit">Filtrar</button>
+        </form>
+</div>
+
+
+
+    <h1>Pedidos Pendientes</h1>
+      {% if pedidos %}
+      {% for pedido in pedidos %}
+        <div class="pedido">
+          <h2>REF Pedido: {{ pedido.numero_pedido }}</h2>
+          <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
+          <p><strong>Prioridad:</strong> {{ pedido.prioridad }}</p>
+
+          <h3>Piezas:</h3>
+          {% if pedido.piezas %}
+            <ul>
+              {% for pieza in pedido.piezas %}
+                <li>
+                  <p><strong>Referencia:</strong> {{ pieza.referencia }}</p>
+                  <p><strong>Material:</strong> {{ pieza.material }}</p>
+                  <p><strong>Espesor:</strong> {{ pieza.espesor }} mm</p>
+                  <p><strong>Color:</strong> {{ pieza.color }}</p>
+                  <p><strong>Estado de Producción:</strong> {{ pieza.estado_produccion }}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>No hay piezas registradas para este pedido.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No hay pedidos pendientes.</p>
+    {% endif %}
+  </div>
+
+  <!-- Enlace al archivo JavaScript externo -->
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
