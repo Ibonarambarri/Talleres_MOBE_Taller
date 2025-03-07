@@ -180,4 +180,4 @@ def obtener_pieza(pieza_id):
 # Ejecutar la aplicación
 if __name__ == '__main__':
     crear_db()  # Asegura que la base de datos exista antes de iniciar
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
