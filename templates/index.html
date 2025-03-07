@@ -69,33 +69,35 @@
 <!-- Contenedor donde aparecerán los pedidos o las piezas filtradas -->
 <div id="contenedorPedidos">
     {% if pedidos %}
-    {% for pedido in pedidos %}
-        <div class="pedido">
-            <h2>REF Pedido: {{ pedido.numero_pedido }}</h2>
-            <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
-            <p><strong>Prioridad:</strong> {{ pedido.prioridad }}</p>
 
-            <h3>Piezas:</h3>
-            {% if pedido.piezas %}
-            <ul>
-                {% for pieza in pedido.piezas %}
-                <li>
-                    <p><strong>Referencia:</strong> {{ pieza.referencia }}</p>
-                    <p><strong>Material:</strong> {{ pieza.material }}</p>
-                    <p><strong>Espesor:</strong> {{ pieza.espesor }} mm</p>
-                    <p><strong>Color:</strong> {{ pieza.color }}</p>
-                    <p><strong>Estado de Producción:</strong> {{ pieza.estado_produccion }}</p>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>No hay piezas registradas para este pedido.</p>
-            {% endif %}
-        </div>
-    {% endfor %}
-    {% else %}
-    <p>No hay pedidos pendientes.</p>
-    {% endif %}
+  {% for pedido in pedidos %}
+    <div class="pedido">
+      <h2>REF Pedido: {{ pedido.numero_pedido }}</h2>
+      <p><strong>Fecha:</strong> {{ pedido.fecha }}</p>
+      <p><strong>Prioridad:</strong> {{ pedido.prioridad }}</p>
+
+      <h3>Piezas:</h3>
+      {% if pedido.piezas %}
+        <ul>
+          {% for pieza in pedido.piezas %}
+            <li class="pieza" data-pieza-id="{{ pieza.id }}">
+              <p><strong>Referencia:</strong> {{ pieza.referencia }}</p>
+              <p><strong>Material:</strong> {{ pieza.material }}</p>
+              <p><strong>Espesor:</strong> {{ pieza.espesor }} mm</p>
+              <p><strong>Color:</strong> {{ pieza.color }}</p>
+              <p><strong>Estado de Producción:</strong> {{ pieza.estado_produccion }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No hay piezas registradas para este pedido.</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No hay pedidos pendientes.</p>
+{% endif %}
+
 </div>
 <!-- Modal para mostrar la información de la pieza -->
 <div id="modal" class="modal">
