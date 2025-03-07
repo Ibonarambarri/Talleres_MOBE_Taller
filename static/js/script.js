@@ -4,12 +4,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const formFiltro = document.getElementById("formFiltro");
     const contenedorPedidos = document.getElementById("contenedorPedidos");
     const tituloResultados = document.getElementById("tituloResultados");
-
-    // Ocultar el formulario de filtros al inicio
-    filtroOpciones.style.display = "none";
+    const modal = document.getElementById("modal");
+    const modalContent = document.getElementById("modalContent");
+    let piezaSeleccionadaId = null;
 
     // Alternar visibilidad del formulario de filtros
-    btnToggleFiltros.addEventListener("click", function() {
+    btnToggleFiltros.addEventListener("click", () => {
         if (filtroOpciones.style.display === "none") {
             filtroOpciones.style.display = "flex";
             btnToggleFiltros.textContent = "Ocultar Filtros";
@@ -19,50 +19,101 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Manejo del formulario de filtrado
+    // Filtrar piezas
     formFiltro.addEventListener("submit", function(event) {
-        event.preventDefault(); // Evita que la página se recargue
+        event.preventDefault();
 
-        const formData = new FormData(formFiltro);
-        const queryString = new URLSearchParams(formData).toString();
-
-        console.log("🔍 Enviando solicitud a /buscar con:", queryString); // Depuración
-
+        const queryString = new URLSearchParams(new FormData(formFiltro)).toString();
         fetch(`/buscar?${queryString}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log("✅ Respuesta recibida:", data);
-                actualizarListaPiezas(data);
-            })
-            .catch(error => console.error('❌ Error en la solicitud:', error));
+            .then(res => res.json())
+            .then(actualizarListaPiezas)
+            .catch(err => console.error("Error al buscar piezas:", err));
     });
 
-    // Función para actualizar la lista de piezas reemplazando los pedidos
+    // Actualizar piezas filtradas
     function actualizarListaPiezas(piezas) {
-        contenedorPedidos.innerHTML = ""; // Limpiar la lista de pedidos
+        contenedorPedidos.innerHTML = "";
 
-        if (piezas.length === 0) {
-            tituloResultados.textContent = "No se encontraron piezas con los filtros aplicados";
-            contenedorPedidos.innerHTML = "<p class='mensaje-no-resultados'>Intenta con otros criterios de búsqueda.</p>";
+        if (!piezas.length) {
+            tituloResultados.textContent = "No se encontraron piezas";
+            contenedorPedidos.innerHTML = "<p>No hay resultados para la búsqueda.</p>";
             return;
         }
 
-        // Cambiar el título cuando se filtra
         tituloResultados.textContent = "Piezas que coinciden con la búsqueda";
 
-        // Agregar cada pieza filtrada a la pantalla con mejor diseño
         piezas.forEach(pieza => {
-            const divPieza = document.createElement('div');
-            divPieza.classList.add('pieza');
-            divPieza.innerHTML = `
-                <h2 class="pieza-referencia">${pieza.ref_pieza}</h2>
-                <p><strong>REF Pedido:</strong> ${pieza.ref_pedido}</p>
-                <p><strong>Fecha:</strong> ${pieza.fecha}</p>
-                <p><strong>Material:</strong> ${pieza.material} - <strong>Espesor:</strong> ${pieza.espesor} mm</p>
-                <p><strong>Color:</strong> ${pieza.color}</p>
-                <p><strong>Estado:</strong> ${pieza.estado}</p>
-            `;
-            contenedorPedidos.appendChild(divPieza);
-        });
+    const div = document.createElement('div');
+    div.classList.add('pieza');
+    div.setAttribute('data-pieza-id', pieza.id);  // <-- Esto es crucial
+    div.innerHTML = `
+        <h2 class="pieza-referencia">${pieza.ref_pieza}</h2>
+        <p><strong>REF Pedido:</strong> ${pieza.ref_pedido}</p>
+        <p><strong>Fecha:</strong> ${pieza.fecha}</p>
+        <p><strong>Material:</strong> ${pieza.material} - <strong>Espesor:</strong> ${pieza.espesor} mm</p>
+        <p><strong>Color:</strong> ${pieza.color}</p>
+        <p><strong>Estado:</strong> ${pieza.estado}</p>
+    `;
+    contenedorPedidos.appendChild(div);
+});
+
+    }
+
+    // Delegación de eventos para abrir modal al hacer clic en una pieza
+    contenedorPedidos.addEventListener("click", function(event) {
+        const piezaDiv = event.target.closest('.pieza');
+        if (piezaDiv) {
+            const piezaId = piezaDiv.dataset.piezaId;
+            fetch(`/pieza/${piezaId}`)
+                .then(res => res.json())
+                .then(abrirModal)
+                .catch(err => console.error("Error al obtener pieza:", err));
+        }
+    });
+
+    // Abrir modal con detalles de la pieza
+    function abrirModal(pieza) {
+        piezaSeleccionadaId = pieza.id;
+        modal.style.display = "block";
+        modalContent.innerHTML = `
+            <span id="closeModal" class="close">&times;</span>
+            <h2>${pieza.referencia}</h2>
+            <p><strong>REF Pedido:</strong> ${pieza.ref_pedido}</p>
+            <p><strong>Fecha:</strong> ${pieza.fecha}</p>
+            <p><strong>Material:</strong> ${pieza.material} - <strong>Espesor:</strong> ${pieza.espesor} mm</p>
+            <p><strong>Color:</strong> ${pieza.color}</p>
+            <p><strong>Estado Actual:</strong> ${pieza.estado_produccion}</p>
+
+            <label>Actualizar Estado:</label>
+            <select id="estadoPieza">
+                <option value="pendiente">Pendiente</option>
+                <option value="cortado">Cortado</option>
+                <option value="doblado">Doblado</option>
+                <option value="punzonado">Punzonado</option>
+                <option value="entregado">Entregado</option>
+            </select>
+            <button id="guardarEstado">Guardar</button>
+        `;
+
+        // Evento para guardar cambios
+        document.getElementById("guardarEstado").onclick = actualizarEstado;
+        document.getElementById("closeModal").onclick = () => modal.style.display = "none";
+    }
+
+    // Actualizar estado de pieza
+    function actualizarEstado() {
+        const nuevoEstado = document.getElementById("estadoPieza").value;
+        fetch(`/actualizar_estado/${piezaSeleccionadaId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ estado: nuevoEstado })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.mensaje);
+            modal.style.display = "none";
+            formFiltro.dispatchEvent(new Event('submit')); // recargar piezas
+        })
+        .catch(err => console.error("Error al actualizar:", err));
     }
 });

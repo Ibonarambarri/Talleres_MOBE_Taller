@@ -97,7 +97,6 @@ def crear_db():
 
 @app.route('/buscar', methods=['GET'])
 def buscar_piezas():
-    # Obtener los parámetros del formulario
     ref_pedido = request.args.get('refPedido', '')
     ref_pieza = request.args.get('refPieza', '')
     fecha_inicio = request.args.get('fechaInicio', '')
@@ -107,9 +106,6 @@ def buscar_piezas():
     color = request.args.get('color', '')
     estado = request.args.get('estado', '')
 
-    print("📌 Filtros recibidos:", request.args)  # Depuración en consola
-
-    # Construcción dinámica de la consulta
     query = Pieza.query.join(Pedido).filter(Pedido.completado == False)
 
     if ref_pedido:
@@ -129,13 +125,10 @@ def buscar_piezas():
     if estado:
         query = query.filter(Pieza.estado_produccion == estado)
 
-    # Obtener resultados
     piezas_filtradas = query.all()
 
-    print(f"🔍 {len(piezas_filtradas)} piezas encontradas.")  # Depuración
-
-    # Convertir resultados a JSON
     resultado = [{
+        "id": pieza.id,  # <- Asegúrate de que está esta línea
         "ref_pieza": pieza.referencia,
         "ref_pedido": pieza.pedido.numero_pedido,
         "fecha": pieza.pedido.fecha.strftime('%Y-%m-%d'),
@@ -148,6 +141,41 @@ def buscar_piezas():
     return jsonify(resultado)
 
 
+@app.route('/actualizar_estado/<int:pieza_id>', methods=['POST'])
+def actualizar_estado(pieza_id):
+    print(f"🔍 Recibiendo solicitud para actualizar pieza con ID: {pieza_id}")
+
+    data = request.get_json()
+    nuevo_estado = data.get('estado')
+
+    if not nuevo_estado:
+        return jsonify({"error": "No se proporcionó un nuevo estado"}), 400
+
+    pieza = Pieza.query.get(pieza_id)
+    if pieza:
+        pieza.estado_produccion = nuevo_estado
+        db.session.commit()
+        print(f"✅ Estado de la pieza {pieza_id} actualizado a: {nuevo_estado}")
+        return jsonify({"mensaje": "Estado actualizado correctamente"}), 200
+
+    print(f"❌ Error: No se encontró la pieza con ID {pieza_id}")
+    return jsonify({"error": "Pieza no encontrada"}), 404
+
+@app.route('/pieza/<int:pieza_id>')
+def obtener_pieza(pieza_id):
+    pieza = Pieza.query.get(pieza_id)
+    if pieza:
+        return jsonify({
+            "id": pieza.id,
+            "referencia": pieza.referencia,
+            "ref_pedido": pieza.pedido.numero_pedido,
+            "fecha": pieza.pedido.fecha.strftime('%Y-%m-%d'),
+            "material": pieza.material,
+            "espesor": pieza.espesor,
+            "color": pieza.color,
+            "estado_produccion": pieza.estado_produccion
+        })
+    return jsonify({"error": "Pieza no encontrada"}), 404
 
 # Ejecutar la aplicación
 if __name__ == '__main__':
