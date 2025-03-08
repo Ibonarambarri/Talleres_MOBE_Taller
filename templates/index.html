@@ -22,9 +22,19 @@
 
 <!-- Contenedor de opciones de filtrado (inicialmente oculto) -->
 <div id="filtroOpciones" class="filtro-opciones" style="display: none;">
-    <form id="formFiltro">
-  <input type="text" name="refPedido" placeholder="REF del pedido">
-  <input type="text" name="refPieza" placeholder="REF de la pieza">
+   <form id="formFiltro">
+  <input
+    type="text"
+    name="refPedido"
+    placeholder="REF del pedido"
+    pattern="[A-Za-z0-9_-]+"
+    title="Solo letras, números y guiones o guiones bajos permitidos"
+    inputmode="text">
+
+  <input type="text" name="refPieza" placeholder="REF de la pieza"
+         pattern="[A-Za-z0-9_-]+"
+         title="Solo letras, números, guiones y guiones bajos permitidos"
+         inputmode="text">
 
   <label>Desde:</label>
   <input type="date" name="fechaInicio">
@@ -40,7 +50,7 @@
     <option value="vidrio">Vidrio</option>
   </select>
 
-  <input type="number" name="espesor" placeholder="Espesor (mm)">
+  <input type="number" name="espesor" placeholder="Espesor (mm)" step="any" inputmode="decimal">
 
   <select name="color">
     <option value="">Selecciona color</option>
@@ -60,7 +70,8 @@
   </select>
 
   <button type="submit">Filtrar</button>
-        </form>
+</form>
+
 </div>
 
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de la Pieza {{ pieza.referencia }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="detalle-container">
+        <a href="/" class="btn-volver">← Volver atrás</a>
+
+        <h1>📑 Detalles de la Pieza: {{ pieza.referencia }}</h1>
+
+        <div class="detalle-info">
+            <p><strong>REF Pedido:</strong> {{ pieza.pedido.numero_pedido }}</p>
+            <p><strong>Fecha:</strong> {{ pieza.pedido.fecha.strftime("%Y-%m-%d") }}</p>
+            <p><strong>Material:</strong> {{ pieza.material }}</p>
+            <p><strong>Espesor:</strong> {{ pieza.espesor }} mm</p>
+            <p><strong>Color:</strong> {{ pieza.color }}</p>
+            <p><strong>Desarrollo:</strong> {{ pieza.desarrollo }} mm</p>
+            <p><strong>Longitud:</strong> {{ pieza.longitud }} mm</p>
+            <p><strong>Número de Piezas:</strong> {{ pieza.numero_piezas }}</p>
+            <p><strong>Total metros:</strong> {{ pieza.total_metros }} m</p>
+            <p><strong>Estado Actual:</strong> {{ pieza.estado_produccion }}</p>
+        </div>
+
+        <form id="formActualizarEstado">
+            <label><strong>Actualizar Estado:</strong></label>
+            <select name="estado" id="estado">
+                <option value="pendiente" {{ 'selected' if pieza.estado_produccion == 'pendiente' else '' }}>📌 Pendiente</option>
+                <option value="cortado" {{ 'selected' if pieza.estado_produccion == 'cortado' else '' }}>✂️ Cortado</option>
+                <option value="doblado" {{ 'selected' if pieza.estado_produccion == 'doblado' else '' }}>🔧 Doblado</option>
+                <option value="punzonado" {{ 'selected' if pieza.estado_produccion == 'punzonado' else '' }}>⚙️ Punzonado</option>
+                <option value="entregado" {{ 'selected' if pieza.estado_produccion == 'entregado' else '' }}>📦 Entregado</option>
+            </select>
+            <button type="submit" class="btn-guardar">💾 Guardar Cambios</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("formActualizarEstado").onsubmit = function(event){
+            event.preventDefault();
+            const nuevoEstado = document.getElementById("estado").value;
+            fetch("/actualizar_estado/{{ pieza.id }}", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({estado: nuevoEstado})
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.mensaje);
+                window.location.href = "/";
+            })
+            .catch(err => alert("Error al actualizar estado: " + err));
+        };
+    </script>
+</body>
+</html>

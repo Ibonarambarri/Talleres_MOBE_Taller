@@ -177,6 +177,12 @@ def obtener_pieza(pieza_id):
         })
     return jsonify({"error": "Pieza no encontrada"}), 404
 
+@app.route('/pieza/<int:pieza_id>/detalle')
+def pieza_detalle(pieza_id):
+    pieza = Pieza.query.get_or_404(pieza_id)
+    return render_template('pieza_detalle.html', pieza=pieza)
+
+
 # Ejecutar la aplicación
 if __name__ == '__main__':
     crear_db()  # Asegura que la base de datos exista antes de iniciar
